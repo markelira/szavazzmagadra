@@ -30,7 +30,8 @@ interface CalculatorStore {
   results: CalculatorResults | null;
   email: string;
   emailStatus: EmailStatus;
-  consentGdpr: boolean;
+  consentHealthData: boolean;
+  consentPrivacyPolicy: boolean;
 
   // Actions
   setFormData: (data: Partial<FormData>) => void;
@@ -38,7 +39,8 @@ interface CalculatorStore {
   setTargetWeight: (weight: number | null) => void;
   setEmail: (email: string) => void;
   setEmailStatus: (status: EmailStatus) => void;
-  setConsentGdpr: (value: boolean) => void;
+  setConsentHealthData: (value: boolean) => void;
+  setConsentPrivacyPolicy: (value: boolean) => void;
   goToStep: (step: Step) => void;
   calculateResults: () => void;
   reset: () => void;
@@ -62,7 +64,8 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   results: null,
   email: "",
   emailStatus: "idle",
-  consentGdpr: false,
+  consentHealthData: false,
+  consentPrivacyPolicy: false,
 
   setFormData: (data) =>
     set((state) => ({
@@ -77,7 +80,9 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
 
   setEmailStatus: (emailStatus) => set({ emailStatus }),
 
-  setConsentGdpr: (consentGdpr) => set({ consentGdpr }),
+  setConsentHealthData: (consentHealthData) => set({ consentHealthData }),
+
+  setConsentPrivacyPolicy: (consentPrivacyPolicy) => set({ consentPrivacyPolicy }),
 
   goToStep: (step) =>
     set((state) => ({
@@ -115,6 +120,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       targetWeight: null,
       email: "",
       emailStatus: "idle",
-      consentGdpr: false,
+      consentHealthData: false,
+      consentPrivacyPolicy: false,
     }),
 }));

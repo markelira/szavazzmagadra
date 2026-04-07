@@ -5,6 +5,7 @@ import { useCalculatorStore } from "@/hooks/useCalculatorStore";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/firebase-client";
+import { PRIVACY_POLICY_VERSION } from "@/lib/privacyVersion";
 
 function MailIcon({ className }: { className?: string }) {
   return (
@@ -43,23 +44,84 @@ function CheckIcon({ className }: { className?: string }) {
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+interface ConsentCheckboxProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  error?: string;
+  required?: boolean;
+  children: React.ReactNode;
+  id: string;
+}
+
+function ConsentCheckbox({
+  checked,
+  onChange,
+  error,
+  required,
+  children,
+  id,
+}: ConsentCheckboxProps) {
+  return (
+    <div>
+      <label htmlFor={id} className="flex items-start gap-3 cursor-pointer group">
+        <div className="relative shrink-0 mt-0.5">
+          <input
+            id={id}
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => onChange(e.target.checked)}
+            className="sr-only peer"
+            aria-required={required}
+          />
+          <div
+            className={cn(
+              "w-5 h-5 rounded-[6px] border-2 transition-all duration-200 flex items-center justify-center",
+              checked
+                ? "bg-[var(--pink-dark)] border-[var(--pink-dark)]"
+                : error
+                  ? "border-[var(--error)] bg-white"
+                  : "border-[var(--border)] bg-white group-hover:border-[var(--pink)]"
+            )}
+          >
+            {checked && <CheckIcon className="w-3 h-3 text-white" />}
+          </div>
+        </div>
+        <span className="text-[13px] text-[var(--mid)] leading-[1.55] select-none">
+          {children}
+          {required && (
+            <span className="text-[var(--pink-dark)] ml-0.5">*</span>
+          )}
+        </span>
+      </label>
+      {error && (
+        <p className="text-xs font-semibold text-[var(--error)] mt-2 ml-8">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function EmailStep() {
   const {
     formData,
     tempo,
     targetWeight,
     email,
-    consentGdpr,
+    consentHealthData,
+    consentPrivacyPolicy,
     setEmail,
     setEmailStatus,
-    setConsentGdpr,
+    setConsentHealthData,
+    setConsentPrivacyPolicy,
     goToStep,
     calculateResults,
   } = useCalculatorStore();
 
   const [localEmail, setLocalEmail] = useState(email);
   const [emailError, setEmailError] = useState("");
-  const [consentError, setConsentError] = useState("");
+  const [healthConsentError, setHealthConsentError] = useState("");
+  const [policyConsentError, setPolicyConsentError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -72,11 +134,21 @@ export function EmailStep() {
     } else {
       setEmailError("");
     }
-    if (!consentGdpr) {
-      setConsentError("El kell fogadnod az adatkezelési tájékoztatót.");
+    if (!consentHealthData) {
+      setHealthConsentError(
+        "El kell fogadnod az egészségügyi adatok kezelésére vonatkozó hozzájárulást."
+      );
       ok = false;
     } else {
-      setConsentError("");
+      setHealthConsentError("");
+    }
+    if (!consentPrivacyPolicy) {
+      setPolicyConsentError(
+        "El kell fogadnod az adatkezelési tájékoztatót."
+      );
+      ok = false;
+    } else {
+      setPolicyConsentError("");
     }
     return ok;
   };
@@ -106,7 +178,12 @@ export function EmailStep() {
           },
           tempo,
           targetWeight,
-          consentGdpr: true,
+          consentHealthData: true,
+          consentPrivacyPolicy: true,
+          consentAnalytics:
+            typeof window !== "undefined" &&
+            window.localStorage.getItem("sm_analytics_consent") === "granted",
+          policyVersion: PRIVACY_POLICY_VERSION,
         }),
       });
 
@@ -114,7 +191,7 @@ export function EmailStep() {
         const body = await res.json().catch(() => ({}));
         if (res.status === 429) {
           setServerError(
-            "Túl sok próbálkozás. Próbáld újra 1 óra múlva, vagy ellenőrizd a postafiókod - lehet, hogy már elküldtük."
+            "Túl sok próbálkozás. Próbáld újra 1 óra múlva, vagy ellenőrizd a postafiókod."
           );
         } else {
           setServerError(
@@ -165,7 +242,7 @@ export function EmailStep() {
       </div>
 
       {/* Card */}
-      <div className="bg-white rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[var(--shadow-card)] border border-[var(--border)] space-y-5">
+      <div className="bg-white rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[var(--shadow-card)] border border-[var(--border)] space-y-6">
         {/* Email field */}
         <div>
           <label
@@ -201,53 +278,56 @@ export function EmailStep() {
           )}
         </div>
 
-        {/* GDPR consent */}
-        <div>
-          <label className="flex items-start gap-3 cursor-pointer group">
-            <div className="relative shrink-0 mt-0.5">
-              <input
-                type="checkbox"
-                checked={consentGdpr}
-                onChange={(e) => {
-                  setConsentGdpr(e.target.checked);
-                  if (consentError && e.target.checked) setConsentError("");
-                }}
-                className="sr-only peer"
-              />
-              <div
-                className={cn(
-                  "w-5 h-5 rounded-[6px] border-2 transition-all duration-200 flex items-center justify-center",
-                  consentGdpr
-                    ? "bg-[var(--pink-dark)] border-[var(--pink-dark)]"
-                    : consentError
-                      ? "border-[var(--error)] bg-white"
-                      : "border-[var(--border)] bg-white group-hover:border-[var(--pink)]"
-                )}
-              >
-                {consentGdpr && <CheckIcon className="w-3 h-3 text-white" />}
-              </div>
-            </div>
-            <span className="text-[13px] text-[var(--mid)] leading-[1.55] select-none">
-              Elolvastam és elfogadom az{" "}
-              <a
-                href="/adatkezeles"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--pink-dark)] font-semibold underline hover:no-underline"
-                onClick={(e) => e.stopPropagation()}
-              >
-                adatkezelési tájékoztatót
-              </a>
-              . Hozzájárulok ahhoz, hogy az email címemet és a kalkulátor adataimat
-              a Szavazz Magadra a tervem elküldéséhez és tárolásához kezelje.{" "}
-              <span className="text-[var(--pink-dark)]">*</span>
-            </span>
-          </label>
-          {consentError && (
-            <p className="text-xs font-semibold text-[var(--error)] mt-2 ml-8">
-              {consentError}
-            </p>
-          )}
+        {/* Consents divider */}
+        <div className="border-t border-[var(--border)] pt-5 space-y-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--mid)]">
+            Hozzájárulások
+          </p>
+
+          {/* Consent 1: Health data (Article 9) — REQUIRED */}
+          <ConsentCheckbox
+            id="consent-health"
+            required
+            checked={consentHealthData}
+            onChange={(v) => {
+              setConsentHealthData(v);
+              if (healthConsentError && v) setHealthConsentError("");
+            }}
+            error={healthConsentError}
+          >
+            Kifejezett hozzájárulásomat adom ahhoz, hogy az AM Studios Group Kft.
+            az egészségi állapotomra vonatkozó adataimat (nem, kor, testsúly,
+            magasság, cél, aktivitási szint, BMI, BMI-kategória, számított makró-
+            és kalória-értékek) a személyes étrend- és mozgástervem
+            elkészítéséhez és emailben történő elküldéséhez kezelje. Tudomásul
+            veszem, hogy ezek az adatok különleges személyes adatnak minősülnek
+            a GDPR 9. cikke értelmében, és a kezelésük jogalapja a GDPR 9. cikk
+            (2) bekezdés a) pontja szerinti kifejezett hozzájárulásom.
+          </ConsentCheckbox>
+
+          {/* Consent 2: Privacy policy (Article 6) — REQUIRED */}
+          <ConsentCheckbox
+            id="consent-policy"
+            required
+            checked={consentPrivacyPolicy}
+            onChange={(v) => {
+              setConsentPrivacyPolicy(v);
+              if (policyConsentError && v) setPolicyConsentError("");
+            }}
+            error={policyConsentError}
+          >
+            Elolvastam és elfogadom az{" "}
+            <a
+              href="/adatkezeles"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--pink-dark)] font-semibold underline hover:no-underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              adatkezelési tájékoztatót
+            </a>
+            .
+          </ConsentCheckbox>
         </div>
 
         {/* Server error */}
@@ -263,8 +343,15 @@ export function EmailStep() {
         <p className="text-xs text-[var(--light)] leading-relaxed flex items-start gap-2">
           <span>🔒</span>
           <span>
-            Az adataidat kizárólag a terved elküldéséhez és a szolgáltatás
-            biztosításához használjuk. Bármikor kérheted az adataid törlését.
+            Az adataidat kizárólag a terved elküldéséhez és tárolásához
+            használjuk. Bármikor kérheted az adataid törlését az{" "}
+            <a
+              href="mailto:info@amstudios.hu"
+              className="text-[var(--pink-dark)] underline"
+            >
+              info@amstudios.hu
+            </a>{" "}
+            címen.
           </span>
         </p>
       </div>

@@ -102,14 +102,30 @@ export function ClosingCTA() {
           #SzavazzMagadra
         </p>
         <p className="text-white/25 text-[10px] mt-3">
-          {"© 2026 Szavazz Magadra"}
+          {"© 2026 AM Studios Group Kft."}
         </p>
-        <a
-          href="/adatkezeles"
-          className="text-white/40 text-[10px] mt-2 underline hover:text-white/70 transition-colors"
-        >
-          Adatkezelési tájékoztató
-        </a>
+
+        {/* Legal links row */}
+        <div className="flex flex-wrap gap-x-5 gap-y-2 justify-center mt-4">
+          <a
+            href="/adatkezeles"
+            className="text-white/40 text-[10px] underline hover:text-white/70 transition-colors"
+          >
+            Adatkezelési tájékoztató
+          </a>
+          <a
+            href="/sutibeallitasok"
+            className="text-white/40 text-[10px] underline hover:text-white/70 transition-colors"
+          >
+            Sütibeállítások
+          </a>
+          <a
+            href="/adatkerelem"
+            className="text-white/40 text-[10px] underline hover:text-white/70 transition-colors"
+          >
+            Adatkezelési kérés
+          </a>
+        </div>
       </div>
     </div>
   );

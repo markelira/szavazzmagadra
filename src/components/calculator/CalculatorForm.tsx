@@ -32,8 +32,8 @@ export function CalculatorForm() {
     const magVal = parseHu(magassag);
     const sulVal = parseHu(testsuly);
 
-    if (!kor || isNaN(korVal) || korVal < 10 || korVal > 100) {
-      newErrors.kor = "Adj meg egy valós kort (10–100).";
+    if (!kor || isNaN(korVal) || korVal < 16 || korVal > 100) {
+      newErrors.kor = "Adj meg egy valós kort (16–100). A szolgáltatás 16 év alatti személyek számára nem elérhető.";
     }
     if (!magassag || isNaN(magVal) || magVal < 100 || magVal > 250) {
       newErrors.magassag = "Adj meg egy valós magasságot (100–250 cm).";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { render } from "@react-email/render";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase-admin";
 import { submitSchema } from "@/lib/submitSchema";
 import { checkAndCleanup } from "@/lib/rateLimit";
@@ -10,11 +10,34 @@ import ResultsEmail from "@/emails/ResultsEmail";
 // firebase-admin requires Node runtime, not Edge
 export const runtime = "nodejs";
 
+const TWO_YEARS_MS = 2 * 365 * 24 * 60 * 60 * 1000;
+
+/**
+ * Truncate the IP address to /24 (IPv4) or /48 (IPv6) for data minimisation.
+ * The truncated value is still useful for fraud detection and consent audit
+ * but no longer uniquely identifies a single household / individual.
+ * GDPR Art. 5(1)(c) - data minimisation principle.
+ */
+function truncateIp(ip: string): string {
+  if (!ip || ip === "unknown") return "unknown";
+  if (ip.includes(":")) {
+    // IPv6 - keep first 3 hextets (≈ /48)
+    const parts = ip.split(":");
+    return parts.slice(0, 3).join(":") + "::";
+  }
+  // IPv4 - keep first 3 octets (/24)
+  const parts = ip.split(".");
+  if (parts.length === 4) {
+    return `${parts[0]}.${parts[1]}.${parts[2]}.0`;
+  }
+  return "unknown";
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // 1. Validate input
+    // 1. Validate input (strict zod schema with both consents required)
     const parsed = submitSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
@@ -22,12 +45,22 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const { email, formData, tempo, targetWeight, consentGdpr } = parsed.data;
+    const {
+      email,
+      formData,
+      tempo,
+      targetWeight,
+      consentHealthData,
+      consentPrivacyPolicy,
+      consentAnalytics,
+      policyVersion,
+    } = parsed.data;
 
-    // 2. Rate-limit per IP+email
-    const ip =
+    // 2. Truncate IP for minimisation, then rate-limit
+    const rawIp =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-    if (!checkAndCleanup(`${ip}:${email.toLowerCase()}`)) {
+    const truncatedIp = truncateIp(rawIp);
+    if (!checkAndCleanup(`${truncatedIp}:${email.toLowerCase()}`)) {
       return NextResponse.json(
         { error: "Túl sok próbálkozás. Próbáld újra később." },
         { status: 429 }
@@ -48,17 +81,23 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // 5. Capture consent metadata for GDPR audit trail
+    // 5. Capture consent metadata for the GDPR Art. 7(1) audit trail
     const userAgent = req.headers.get("user-agent") ?? "unknown";
     const consentRecord = {
-      consentGdpr,
+      consentHealthData,         // Article 9(2)(a) - explicit
+      consentPrivacyPolicy,      // Article 6(1)(a)
+      consentAnalytics: consentAnalytics ?? false, // ePrivacy
       consentTimestamp: FieldValue.serverTimestamp(),
-      consentIp: ip,
+      consentIp: truncatedIp,    // /24 or /48 truncated
       consentUserAgent: userAgent,
-      consentVersion: "1.0",
+      policyVersion,             // which version of the notice was agreed to
     };
 
-    // 6. Persist submission + enqueue email (in parallel)
+    // 6. Compute the TTL expiry timestamp (2 years from now).
+    //    The Firestore TTL policy on `expiresAt` will auto-delete the doc.
+    const expiresAt = Timestamp.fromMillis(Date.now() + TWO_YEARS_MS);
+
+    // 7. Persist submission + enqueue email (in parallel)
     await Promise.all([
       adminDb.collection("submissions").add({
         email,
@@ -68,6 +107,7 @@ export async function POST(req: NextRequest) {
         results,
         ...consentRecord,
         createdAt: FieldValue.serverTimestamp(),
+        expiresAt, // Firestore TTL policy field
       }),
       adminDb.collection("mail").add({
         to: email,
