@@ -2,12 +2,59 @@
 
 import { useCalculatorStore } from "@/hooks/useCalculatorStore";
 
+function EmailBanner() {
+  const { email, emailStatus } = useCalculatorStore();
+  if (emailStatus === "idle") return null;
+
+  if (emailStatus === "sending") {
+    return (
+      <div className="rounded-[var(--radius-lg)] bg-[var(--pink-light)] border border-[var(--pink)] px-5 py-4 flex items-center gap-3">
+        <div className="w-5 h-5 border-2 border-[var(--pink-dark)] border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-semibold text-[var(--pink-dark)]">
+          Küldés folyamatban...
+        </p>
+      </div>
+    );
+  }
+
+  if (emailStatus === "sent") {
+    return (
+      <div className="rounded-[var(--radius-lg)] bg-[var(--pink-light)] border border-[var(--pink)] px-5 py-4 flex items-start gap-3">
+        <span className="text-lg mt-0.5">✅</span>
+        <div>
+          <p className="text-sm font-bold text-[var(--pink-dark)]">
+            Elküldtük a tervet!
+          </p>
+          <p className="text-xs text-[var(--pink-dark)]/80 mt-0.5">
+            Cím: <strong>{email}</strong> · Ellenőrizd a spam mappát is.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[var(--radius-lg)] bg-[#FDECEC] border border-[#E5A5A5] px-5 py-4 flex items-start gap-3">
+      <span className="text-lg mt-0.5">⚠️</span>
+      <div>
+        <p className="text-sm font-bold text-[#A03030]">
+          Nem sikerült elküldeni az emailt.
+        </p>
+        <p className="text-xs text-[#A03030]/80 mt-0.5">
+          A terved itt látható lent - bármikor visszanézheted ezen az oldalon.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function Results() {
   const { results } = useCalculatorStore();
   if (!results) return null;
 
   return (
     <div className="space-y-5">
+      <EmailBanner />
       {/* Hero: Kalóriacél */}
       <div className="relative bg-gradient-to-br from-[var(--pink)] to-[var(--pink-dark)] rounded-[var(--radius-xl)] p-8 md:p-10 text-white overflow-hidden">
         {/* Decorative circles */}

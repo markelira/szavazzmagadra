@@ -12,7 +12,7 @@ function parseHu(str: string): number {
 }
 
 export function TempoSelector() {
-  const { formData, tempo, setTempo, setTargetWeight, goToStep, calculateResults } =
+  const { formData, tempo, setTempo, setTargetWeight, goToStep } =
     useCalculatorStore();
 
   const [celsuly, setCelsuly] = useState("");
@@ -20,7 +20,7 @@ export function TempoSelector() {
 
   const config = tempoData[formData.goal];
 
-  const handleCalculate = () => {
+  const handleNext = () => {
     if (celsuly) {
       const val = parseHu(celsuly);
       if (isNaN(val) || val < 30 || val > 300) {
@@ -32,7 +32,8 @@ export function TempoSelector() {
     } else {
       setTargetWeight(null);
     }
-    calculateResults();
+    // Advance to the new email step (3); calculation happens there
+    goToStep(3);
   };
 
   return (
@@ -156,8 +157,8 @@ export function TempoSelector() {
         <Button variant="secondary" size="sm" onClick={() => goToStep(1)}>
           &larr; Vissza
         </Button>
-        <Button onClick={handleCalculate}>
-          Kisz&aacute;m&iacute;tom
+        <Button onClick={handleNext} arrow>
+          Tov&aacute;bb
         </Button>
       </div>
     </div>

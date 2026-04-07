@@ -17,20 +17,27 @@ interface FormData {
   activityLevel: ActivityLevel;
 }
 
+export type Step = 1 | 2 | 3 | 4;
+export type EmailStatus = "idle" | "sending" | "sent" | "error";
+
 interface CalculatorStore {
   // State
-  step: 1 | 2 | 3;
+  step: Step;
   direction: 1 | -1;
   formData: FormData;
   tempo: Tempo;
   targetWeight: number | null;
   results: CalculatorResults | null;
+  email: string;
+  emailStatus: EmailStatus;
 
   // Actions
   setFormData: (data: Partial<FormData>) => void;
   setTempo: (tempo: Tempo) => void;
   setTargetWeight: (weight: number | null) => void;
-  goToStep: (step: 1 | 2 | 3) => void;
+  setEmail: (email: string) => void;
+  setEmailStatus: (status: EmailStatus) => void;
+  goToStep: (step: Step) => void;
   calculateResults: () => void;
   reset: () => void;
 }
@@ -51,6 +58,8 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   tempo: "kozepes",
   targetWeight: null,
   results: null,
+  email: "",
+  emailStatus: "idle",
 
   setFormData: (data) =>
     set((state) => ({
@@ -60,6 +69,10 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   setTempo: (tempo) => set({ tempo }),
 
   setTargetWeight: (weight) => set({ targetWeight: weight }),
+
+  setEmail: (email) => set({ email }),
+
+  setEmailStatus: (emailStatus) => set({ emailStatus }),
 
   goToStep: (step) =>
     set((state) => ({
@@ -86,7 +99,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       targetWeight ?? undefined
     );
 
-    set({ results, step: 3, direction: 1 });
+    set({ results, step: 4, direction: 1 });
   },
 
   reset: () =>
@@ -95,5 +108,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       direction: -1,
       results: null,
       targetWeight: null,
+      email: "",
+      emailStatus: "idle",
     }),
 }));

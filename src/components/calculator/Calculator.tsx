@@ -5,6 +5,7 @@ import { useCalculatorStore } from "@/hooks/useCalculatorStore";
 import { ProgressIndicator } from "./ProgressIndicator";
 import { CalculatorForm } from "./CalculatorForm";
 import { TempoSelector } from "./TempoSelector";
+import { EmailStep } from "./EmailStep";
 import { Results } from "./Results";
 import { ResultsCTA } from "./ResultsCTA";
 import { Button } from "@/components/ui/Button";
@@ -44,13 +45,14 @@ export function Calculator() {
           >
             {step === 1 && <CalculatorForm />}
             {step === 2 && <TempoSelector />}
-            {step === 3 && (
+            {step === 3 && <EmailStep />}
+            {step === 4 && (
               <>
                 <Results />
                 <ResultsCTA />
                 <div className="text-center mt-5">
                   <Button variant="secondary" size="sm" onClick={reset}>
-                    Adatok m&oacute;dos&iacute;t&aacute;sa
+                    Adatok módosítása
                   </Button>
                 </div>
               </>

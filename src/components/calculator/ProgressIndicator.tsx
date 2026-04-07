@@ -1,13 +1,15 @@
 import { cn } from "@/lib/utils";
+import type { Step } from "@/hooks/useCalculatorStore";
 
 const steps = [
-  { label: "Alapadatok" },
+  { label: "Adatok" },
   { label: "Tempó" },
-  { label: "Eredmények" },
+  { label: "Email" },
+  { label: "Eredmény" },
 ];
 
 interface ProgressIndicatorProps {
-  currentStep: 1 | 2 | 3;
+  currentStep: Step;
 }
 
 export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
@@ -28,12 +30,12 @@ export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
         ))}
       </div>
       {/* Labels */}
-      <div className="flex justify-center gap-8 mt-2">
+      <div className="flex justify-center gap-6 sm:gap-8 mt-2">
         {steps.map((step, i) => (
           <span
             key={i}
             className={cn(
-              "text-[10px] font-semibold uppercase tracking-[2px] transition-colors duration-300",
+              "text-[9px] sm:text-[10px] font-semibold uppercase tracking-[2px] transition-colors duration-300",
               i + 1 === currentStep
                 ? "text-[var(--pink-dark)]"
                 : "text-[var(--light)]"
