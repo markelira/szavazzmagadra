@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
             Jelen adatkezelési tájékoztató (a továbbiakban: „Tájékoztató")
             azt írja le, hogy az AM Studios Group Korlátolt Felelősségű
             Társaság (a továbbiakban: „Adatkezelő" vagy „Szolgáltató")
-            a https://szavazzmagadra.vercel.app oldalon elérhető Szavazz
+            a https://www.szavazzmagadra.hu oldalon elérhető Szavazz
             Magadra szolgáltatás keretében hogyan kezeli a látogatók
             személyes adatait.
           </p>
@@ -121,11 +121,11 @@ export default function PrivacyPolicy() {
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Rövidített név</td><td className="py-2">AM Studios Group Kft.</td></tr>
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Székhely</td><td className="py-2">3532 Miskolc, Miklós utca 17. 2. em. 26. ajtó</td></tr>
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Adószám</td><td className="py-2">33004312-1-05</td></tr>
-                <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Cégjegyzékszám</td><td className="py-2">A Miskolci Törvényszék Cégbírósága által nyilvántartásba véve <span className="text-[var(--light)]">[KITÖLTENDŐ — cégjegyzékszám]</span></td></tr>
+                <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Cégjegyzékszám</td><td className="py-2">05 09 039717 (Miskolci Törvényszék Cégbírósága)</td></tr>
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Alapítás éve</td><td className="py-2">2026</td></tr>
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Főtevékenység</td><td className="py-2">6210 - Számítógépes programozás</td></tr>
                 <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Email</td><td className="py-2"><a href="mailto:info@amstudios.hu" className="text-[var(--pink-dark)] underline">info@amstudios.hu</a></td></tr>
-                <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Adatkezelő képviselője</td><td className="py-2 text-[var(--light)]">[KITÖLTENDŐ — kapcsolattartó név]</td></tr>
+                <tr><td className="py-2 pr-4 font-semibold text-[var(--dark)] align-top">Adatkezelő képviselője</td><td className="py-2">Kecskeméti Ádám László</td></tr>
               </tbody>
             </table>
           </div>
