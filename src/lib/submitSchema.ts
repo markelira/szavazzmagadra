@@ -17,6 +17,10 @@ export const submitSchema = z.object({
   }),
   tempo: z.enum(["laza", "kozepes", "intenziv"]),
   targetWeight: z.number().min(30).max(300).nullable().optional(),
+  // GDPR consent — must be exactly true
+  consentGdpr: z.literal(true, {
+    message: "El kell fogadnod az adatkezelési tájékoztatót.",
+  }),
 });
 
 export type SubmitPayload = z.infer<typeof submitSchema>;

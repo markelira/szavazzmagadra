@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const { email, formData, tempo, targetWeight } = parsed.data;
+    const { email, formData, tempo, targetWeight, consentGdpr } = parsed.data;
 
     // 2. Rate-limit per IP+email
     const ip =
@@ -48,7 +48,17 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // 5. Persist submission + enqueue email (in parallel)
+    // 5. Capture consent metadata for GDPR audit trail
+    const userAgent = req.headers.get("user-agent") ?? "unknown";
+    const consentRecord = {
+      consentGdpr,
+      consentTimestamp: FieldValue.serverTimestamp(),
+      consentIp: ip,
+      consentUserAgent: userAgent,
+      consentVersion: "1.0",
+    };
+
+    // 6. Persist submission + enqueue email (in parallel)
     await Promise.all([
       adminDb.collection("submissions").add({
         email,
@@ -56,6 +66,7 @@ export async function POST(req: NextRequest) {
         tempo,
         targetWeight: targetWeight ?? null,
         results,
+        ...consentRecord,
         createdAt: FieldValue.serverTimestamp(),
       }),
       adminDb.collection("mail").add({

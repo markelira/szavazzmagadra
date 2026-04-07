@@ -104,6 +104,12 @@ export function ClosingCTA() {
         <p className="text-white/25 text-[10px] mt-3">
           {"© 2026 Szavazz Magadra"}
         </p>
+        <a
+          href="/adatkezeles"
+          className="text-white/40 text-[10px] mt-2 underline hover:text-white/70 transition-colors"
+        >
+          Adatkezelési tájékoztató
+        </a>
       </div>
     </div>
   );
