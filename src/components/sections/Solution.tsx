@@ -59,8 +59,8 @@ export function Solution() {
               className="mt-7"
               items={[
                 "Nem kell edző. Nem kell edzőterem.",
-                "Csak egy csoport, aki megtart.",
-                "Heti rutin, ami valóban beleilleszkedik.",
+                "Egy csoport, ahol látsz másokat csinálni — és ez elég ahhoz, hogy te is csináld.",
+                "Napi 15 perc, amit együtt csináltok. Nem egyedül.",
               ]}
             />
 
@@ -85,7 +85,7 @@ export function Solution() {
                       {"Közösség"}
                     </p>
                     <p className="text-base font-bold text-[var(--dark)] leading-tight">
-                      {"800+ tag"}
+                      {"17 000+ ember"}
                     </p>
                   </div>
                 </div>
@@ -109,7 +109,7 @@ export function Solution() {
                   </div>
                 </div>
                 <p className="text-[11px] text-[var(--mid)] leading-snug">
-                  {"Együtt szavazunk minden pénteken"}
+                  {"Pénteken szavazunk. Hétfőn rajt. Együtt."}
                 </p>
               </div>
 

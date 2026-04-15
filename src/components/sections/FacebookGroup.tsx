@@ -1,12 +1,53 @@
-import Image from "next/image";
-import { Button } from "@/components/ui/Button";
-import { FeatureCard } from "@/components/ui/FeatureCard";
+"use client";
+
+import { useRef, useState, useEffect } from "react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { CheckList } from "@/components/ui/CheckList";
 import { BrandPill } from "@/components/ui/BrandPill";
+import { Button } from "@/components/ui/Button";
+import { GroupPostCard } from "@/components/group/GroupPostCard";
+import { VotingPoll } from "@/components/group/VotingPoll";
+import { CheckInFeed } from "@/components/group/CheckInFeed";
+import { EncouragementBubble } from "@/components/group/EncouragementBubble";
+import { AlexaEncouragementCard } from "@/components/group/AlexaEncouragementCard";
+import { ChallengeVideoCard } from "@/components/group/ChallengeVideoCard";
 import { LINKS } from "@/lib/links";
 
-/* ── Inline brand SVG icons ── */
+const challengeVideos = [
+  {
+    day: "Hétfő",
+    dayNumber: "1. nap",
+    title: "Nyújtsd ki magad!",
+    emoji: "\u{1F9D8}",
+    videoSrc: "/videos/hetfoi-nyujtas.mp4",
+    posterSrc: "/videos/hetfoi-nyujtas-poster.jpg",
+    duration: "1:11",
+    likes: 27,
+    comments: 13,
+  },
+  {
+    day: "Kedd",
+    dayNumber: "2. nap",
+    title: "Nyújtsd ki magad!",
+    emoji: "\u{1F9D8}",
+    videoSrc: "/videos/keddi-nyujtas.mp4",
+    posterSrc: "/videos/keddi-nyujtas-poster.jpg",
+    duration: "1:01",
+    likes: 13,
+    comments: 8,
+  },
+  {
+    day: "Szerda",
+    dayNumber: "3. nap",
+    title: "Nyújtsd ki magad!",
+    emoji: "\u{1F9D8}",
+    videoSrc: "/videos/szerdai-nyujtas.mp4",
+    posterSrc: "/videos/szerdai-nyujtas-poster.jpg",
+    duration: "1:17",
+    likes: 18,
+    comments: 7,
+  },
+];
+
 function FacebookFIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -15,148 +56,176 @@ function FacebookFIcon({ className }: { className?: string }) {
   );
 }
 
-function ThumbsUpIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M2 21h4V9H2v12zm20-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L13.17 1 6.59 7.59C6.22 7.95 6 8.45 6 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
-    </svg>
-  );
-}
-
-function HeartIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-    </svg>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
 export function FacebookGroup() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeCard, setActiveCard] = useState(0);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const scrollLeft = el.scrollLeft;
+      const cardWidth = el.firstElementChild?.clientWidth ?? 1;
+      setActiveCard(Math.round(scrollLeft / (cardWidth + 20)));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div>
       <SectionHeader
-        eyebrow="A közösség"
-        headlineLight="Egy Facebook csoport,"
-        headlineBold="ami megtart."
+        badge={
+          <BrandPill
+            icon={<FacebookFIcon className="w-3.5 h-3.5 text-[#1877F2]" />}
+          >
+            Facebook csoport
+          </BrandPill>
+        }
+        eyebrow="Nézz bele"
+        headlineLight="Nem ígérünk."
+        headlineBold="Mutatjuk."
         stack
-        subtitle="Nem app. Nem előfizetés. Csak egy zárt Facebook csoport, ahol minden héten együtt szavazunk és együtt csináljuk."
+        subtitle="Ez nem egy újabb csoport, ahol senki nem ír. Nézd meg, mi történik bent minden héten."
       />
 
-      <FeatureCard bg="pink-light" className="p-8 md:p-14 lg:p-20 overflow-visible">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
-          {/* LEFT: Floating cards composition */}
-          <div className="relative flex justify-center lg:justify-start order-2 lg:order-1">
-            <div className="relative w-[300px] md:w-[380px] aspect-[2/1.05]">
-              {/* Main group cover card */}
-              <div className="absolute inset-0 rounded-[18px] overflow-hidden shadow-2xl bg-white border border-[var(--border)]">
-                <div className="relative w-full aspect-[2/1.05]">
-                  <Image
-                    src="/images/group-cover.png"
-                    alt="Szavazz Magadra Facebook csoport"
-                    fill
-                    sizes="(max-width: 768px) 300px, 380px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="bg-white px-4 py-3 flex items-center gap-2">
-                  <div className="flex-1">
-                    <p className="text-[12px] font-bold text-[var(--dark)] leading-tight">
-                      Szavazz Magadra
-                    </p>
-                    <p className="text-[10px] text-[var(--mid)] mt-0.5">{"Zárt csoport"}</p>
-                  </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#1877F2] text-white text-[10px] font-bold">
-                    <ThumbsUpIcon className="w-3 h-3" />
-                    {"Tetszik"}
-                  </div>
-                </div>
-              </div>
+      {/* Three-card grid: horizontal scroll on mobile, 3-col grid on desktop */}
+      <div
+        ref={scrollRef}
+        className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:-mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide"
+      >
+        {/* Card 1: Voting Poll */}
+        <GroupPostCard
+          name="Lexfit"
+          avatar="/images/alexa.jpg"
+          timestamp="Péntek 18:00"
+          reactions={{ hearts: 24, likes: 8 }}
+          className="min-w-[85vw] snap-center md:min-w-0"
+        >
+          <VotingPoll />
+        </GroupPostCard>
 
-              {/* Floating: Facebook brand circle */}
-              <div className="absolute -bottom-5 -left-6 md:-bottom-6 md:-left-8 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#1877F2] flex items-center justify-center shadow-xl ring-4 ring-white">
-                <FacebookFIcon className="w-6 h-6 md:w-7 md:h-7 text-white" />
-              </div>
+        {/* Card 2: Check-in Feed */}
+        <GroupPostCard
+          name="Hétfő kihívás"
+          timestamp="Ma"
+          reactions={{ hearts: 15 }}
+          className="min-w-[85vw] snap-center md:min-w-0"
+        >
+          <p className="text-[13px] font-semibold text-[var(--dark)] mb-3">
+            {"\u{1F9D8} Nyújtsd ki magad! — 1. nap"}
+          </p>
+          <CheckInFeed maxItems={5} showSummary />
+        </GroupPostCard>
 
-              {/* Floating: Joined notification */}
-              <div className="absolute -top-7 left-0 md:-top-8 md:-left-2 bg-white rounded-full pl-2 pr-4 py-2 flex items-center gap-2 shadow-xl border border-[var(--border)]">
-                <div className="w-6 h-6 rounded-full bg-[var(--pink-dark)] flex items-center justify-center">
-                  <CheckIcon className="w-3.5 h-3.5 text-white" />
-                </div>
-                <p className="text-[11px] font-bold text-[var(--dark)]">
-                  {"Csatlakoztál a csoporthoz"}
-                </p>
-              </div>
-
-              {/* Floating: Heart reaction */}
-              <div className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center shadow-xl ring-4 ring-[#E91E63]/10">
-                <HeartIcon className="w-5 h-5 md:w-6 md:h-6 text-[#E91E63]" />
-              </div>
-
-              {/* Floating: Heti kihívás */}
-              <div className="absolute -bottom-6 -right-4 md:-bottom-8 md:-right-6 bg-white rounded-full px-3.5 py-2 flex items-center gap-2 shadow-xl border border-[var(--border)]">
-                <span className="text-base">{"✅"}</span>
-                <p className="text-[11px] font-bold text-[var(--dark)]">
-                  {"Heti kihívás"}
-                </p>
-              </div>
-
-              {/* Floating: Thumbs up */}
-              <div className="hidden md:flex absolute top-[40%] -right-9 w-9 h-9 rounded-full bg-white items-center justify-center shadow-lg">
-                <ThumbsUpIcon className="w-4 h-4 text-[#1877F2]" />
-              </div>
-            </div>
+        {/* Card 3: Encouragement */}
+        <GroupPostCard
+          name="Közösség"
+          timestamp="2 napja"
+          reactions={{ hearts: 4 }}
+          className="min-w-[85vw] snap-center md:min-w-0"
+        >
+          <EncouragementBubble className="mb-4" />
+          <div className="border-t border-[var(--border)] pt-3">
+            <AlexaEncouragementCard />
           </div>
+        </GroupPostCard>
+      </div>
 
-          {/* RIGHT: Copy + CTA */}
-          <div className="order-1 lg:order-2">
-            <BrandPill
-              icon={<FacebookFIcon className="w-3.5 h-3.5 text-[#1877F2]" />}
-              className="mb-5"
-            >
-              {"Facebook csoport"}
-            </BrandPill>
+      {/* Mobile dot indicators */}
+      <div className="flex justify-center gap-2 mt-4 md:hidden">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+              activeCard === i ? "bg-[var(--pink-dark)]" : "bg-[var(--border)]"
+            }`}
+          />
+        ))}
+      </div>
 
-            <h3 className="text-[clamp(24px,3vw,34px)] font-light text-[var(--dark)] leading-[1.15] tracking-tight">
-              {"Ott vagyunk, ahol "}
-              <span className="font-bold">{"úgyis vagy."}</span>
-            </h3>
-
-            <CheckList
-              className="mt-7"
-              items={[
-                "Heti kihívások - minden pénteken új szavazás",
-                "Együtt döntünk, együtt csináljuk végig",
-                "Zárt, biztonságos, ítélkezésmentes",
-                "Ingyenes - mindig az marad",
-              ]}
-            />
-
-            <div className="mt-9">
-              <Button variant="primary" size="lg" href={LINKS.facebookGroup} external arrow>
-                <FacebookFIcon className="w-4 h-4" />
-                {"Csatlakozz a csoporthoz"}
-              </Button>
-            </div>
+      {/* Challenge video previews */}
+      <div className="mt-10 md:mt-14">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-full bg-[var(--pink-dark)] flex items-center justify-center">
+            <span className="text-white text-sm">{"\u{1F3AC}"}</span>
+          </div>
+          <div>
+            <p className="text-[13px] font-bold text-[var(--dark)]">
+              {"Ez a heti kihívás"}
+            </p>
+            <p className="text-[10px] text-[var(--mid)]">
+              {"🧘 Nyújtsd ki magad! — a tagok szavazták"}
+            </p>
           </div>
         </div>
-      </FeatureCard>
+
+        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:-mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide">
+          {challengeVideos.map((video, i) => (
+            <ChallengeVideoCard
+              key={i}
+              {...video}
+              className="min-w-[72vw] snap-center md:min-w-0"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Pain-point ↔ Benefit layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-12 md:mt-16 max-w-4xl mx-auto">
+        {/* Left: Pain points */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--mid)] mb-5">
+            {"Ismerős?"}
+          </p>
+          <div className="space-y-4">
+            {[
+              "\u201EHétfőn elkezdem, szerdára hagyom.\u201D",
+              "\u201EEgyedül nem tudom magam rávenni.\u201D",
+              "\u201ENem tudom, mit csináljak.\u201D",
+            ].map((quote, i) => (
+              <p
+                key={i}
+                className="text-[var(--mid)] text-[15px] italic leading-relaxed pl-4 border-l-2 border-[var(--border)]"
+              >
+                {quote}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Benefits */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--pink-dark)] mb-5">
+            {"Nálunk:"}
+          </p>
+          <div className="space-y-4">
+            {[
+              "Pénteken szavazol, hétfőn együtt kezdtek.",
+              "12-en jeleznek ✅ minden nap. Te sem vagy egyedül.",
+              "Alexa mutatja a gyakorlatokat. Napi 15 perc.",
+            ].map((benefit, i) => (
+              <p
+                key={i}
+                className="text-[var(--dark)] text-[15px] font-medium leading-relaxed pl-4 border-l-2 border-[var(--pink-dark)]"
+              >
+                {benefit}
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="text-center mt-12">
+        <Button variant="primary" size="lg" href={LINKS.facebookGroup} external arrow>
+          <FacebookFIcon className="w-4 h-4" />
+          {"Csatlakozz a csoporthoz"}
+        </Button>
+        <p className="text-[12px] text-[var(--mid)] mt-3">
+          {"Ingyenes. Mindig az marad."}
+        </p>
+      </div>
     </div>
   );
 }

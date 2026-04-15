@@ -56,10 +56,10 @@ export function ClosingCTA() {
       </h2>
 
       <p className="text-white/80 text-base md:text-lg leading-relaxed mt-12 max-w-md mx-auto">
-        {"Pénteken szavazás. Hétfőn rajt."}
+        {"Ma 12-en jeleztek ✅-t. Holnap te is ott lehetsz."}
         <br />
         <span className="font-semibold text-white">
-          {"A kérdés: te ott leszel?"}
+          {"A kérdés: szavazol magadra?"}
         </span>
       </p>
 
@@ -71,7 +71,7 @@ export function ClosingCTA() {
       </div>
 
       <p className="text-white/50 text-xs mt-6">
-        {"Zárt csoport • Ingyenes • Egy ✅ is elég"}
+        {"Zárt csoport • 0 Ft, mindig • 17 000+ ember"}
       </p>
 
       {/* Bottom brand block (replaces the removed footer) */}

@@ -9,7 +9,7 @@ const steps = [
     number: "01",
     title: "Szavazz",
     description:
-      "Minden pénteken 4 opció. Ti döntötök, mit csináltok jövő héten.",
+      "Minden pénteken Alexa felrak 4 opciót. 🌱 Gyengéd ébresztő, 🔥 Erősítés, ⚡ Kardió, 🧘 Nyújtás — ti döntötök.",
     Icon: Vote,
     bg: "bg-[var(--tag-peach)]",
     floatLabel: "Péntek",
@@ -29,7 +29,7 @@ const steps = [
     number: "03",
     title: "Jelezz",
     description:
-      "Megcsináltad? Beírsz egy ✅-t. Ennyi. Nem egyedül csinálod.",
+      "Megcsináltad? Beírsz egy ✅-t. Ma 12-en írtak. Holnap te is ott leszel.",
     Icon: CheckCircle,
     bg: "bg-[var(--tag-blush)]",
     floatLabel: "Egy ✅ is elég",
@@ -97,10 +97,10 @@ export function HowItWorks() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <p className="text-white text-[clamp(20px,3vw,28px)] font-light leading-tight">
-              {"Készen állsz?"}
+              {"A legtöbben hétfőn kezdik és szerdán hagyják abba."}
             </p>
             <p className="text-white/70 text-sm mt-1">
-              {"Ingyenes Facebook csoport. Egy ✅ is elég."}
+              {"Nálunk a szerdai ✅ a legnépszerűbb nap. Gyere, és értsd meg, miért."}
             </p>
           </div>
           <Button variant="white-on-dark" size="lg" href="#csoport" arrow>

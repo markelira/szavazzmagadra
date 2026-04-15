@@ -43,7 +43,7 @@ const faqItems = [
   {
     question: "Mennyibe kerül?",
     answer:
-      "A csoport ingyenes. A közösség ingyenes. Később lesz egy platform részletesebb programokkal, de a csoport mindig ingyenes marad.",
+      "Nulla forint. Most is, és mindig. A csoport, a kihívások, a közösség — mind ingyenes. Később lesz részletesebb platform, de a csoport mindig ingyenes marad. Ez nem marketing. Ez ígéret.",
   },
   {
     question: "Ez egy fogyókúrás csoport?",

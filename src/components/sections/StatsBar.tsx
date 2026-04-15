@@ -1,8 +1,8 @@
 const stats = [
-  { label: "Ingyenes", value: "100%" },
-  { label: "Heti kihívás", value: "✓" },
-  { label: "Közösség", value: "⚀" },
-  { label: "Magyar nyelven", value: "\u{1F1ED}\u{1F1FA}" },
+  { label: "ember a közösségben", value: "17 000+" },
+  { label: "heti kihívás eddig", value: "52" },
+  { label: "napi ✅ check-in", value: "8–15" },
+  { label: "most és mindig", value: "0 Ft" },
 ];
 
 export function StatsBar() {

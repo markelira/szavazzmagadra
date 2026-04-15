@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/Section";
 import { Hero } from "@/components/sections/Hero";
 import { StatsBar } from "@/components/sections/StatsBar";
 import { Problem } from "@/components/sections/Problem";
+import { SocialProof } from "@/components/sections/SocialProof";
 import { Solution } from "@/components/sections/Solution";
 import { FacebookGroup } from "@/components/sections/FacebookGroup";
 import { CalculatorSection } from "@/components/sections/CalculatorSection";
@@ -22,10 +23,6 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="csoport" bg="white">
-          <FacebookGroup />
-        </Section>
-
         <Section bg="white" className="!py-10 md:!py-12">
           <StatsBar />
         </Section>
@@ -34,8 +31,16 @@ export default function Home() {
           <Problem />
         </Section>
 
+        <Section id="social-proof" bg="white">
+          <SocialProof />
+        </Section>
+
         <Section id="megoldas" bg="white">
           <Solution />
+        </Section>
+
+        <Section id="csoport" bg="white">
+          <FacebookGroup />
         </Section>
 
         <Section id="kalkulator" bg="white">
@@ -46,7 +51,7 @@ export default function Home() {
           <HowItWorks />
         </Section>
 
-        <Section id="alexa" bg="white">
+        <Section id="alexa" bg="white" noContainer noPadding animate={false}>
           <Guide />
         </Section>
 

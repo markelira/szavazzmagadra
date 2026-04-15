@@ -69,14 +69,16 @@ export function Problem() {
             </p>
           </div>
 
-          {/* Floating: empathy badge (bottom-left) */}
-          <div className="hidden md:flex absolute -bottom-5 left-12 bg-white rounded-full pl-2 pr-4 py-2 items-center gap-2 shadow-xl border border-[var(--border)]">
-            <div className="w-6 h-6 rounded-full bg-[var(--pink-dark)] flex items-center justify-center text-white text-xs">
-              {"❤"}
+          {/* Floating: encouragement from the group (bottom-left) */}
+          <div className="hidden md:flex absolute -bottom-8 left-8 bg-white rounded-[16px] p-3 shadow-xl border border-[var(--border)] max-w-[220px]">
+            <div className="space-y-1.5">
+              <p className="text-[10px] text-[var(--mid)]">
+                {"bárcsak \u{1F61E}"}
+              </p>
+              <p className="text-[10px] font-medium text-[var(--dark)]">
+                {"sikerülni fog, kitartáson múlik!! \u{1F4AA}"}
+              </p>
             </div>
-            <p className="text-[11px] font-bold text-[var(--dark)]">
-              {"Mi is így voltunk"}
-            </p>
           </div>
         </FeatureCard>
       </div>
@@ -86,6 +88,10 @@ export function Problem() {
         <br />
         <span className="font-semibold text-[var(--dark)]">
           {"Hanem mert egyedül tényleg nehéz."}
+        </span>
+        <br />
+        <span className="text-[var(--mid)] mt-2 block">
+          {"De mi lenne, ha látnád, hogy mások is pont így éreznek — és mégis csinálják?"}
         </span>
       </p>
     </div>
